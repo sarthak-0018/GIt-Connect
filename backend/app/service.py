@@ -276,26 +276,26 @@ async def analyze_repository(owner: str, repo: str) -> dict:
 
 
 class ClaimEvidence(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    claim: str
-    evidence_ids: list[str]
+    model_config = ConfigDict(extra="ignore")
+    claim: str = ""
+    evidence_ids: list[str] = []
 
 
 class ModelGuide(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-    project_summary: str
-    technology_stack: list[str]
-    prerequisites: list[str]
-    setup_steps: list[str]
-    run_instructions: list[str]
-    build_commands: list[str]
-    test_commands: list[str]
-    important_directories: list[str]
-    entry_points: list[dict]
-    where_to_start: str
-    contribution_workflow: list[str]
-    warnings: list[str]
-    evidence: list[ClaimEvidence]
+    model_config = ConfigDict(extra="ignore")
+    project_summary: str = ""
+    technology_stack: list[str] = []
+    prerequisites: list[str] = []
+    setup_steps: list[str] = []
+    run_instructions: list[str] = []
+    build_commands: list[str] = []
+    test_commands: list[str] = []
+    important_directories: list[str] = []
+    entry_points: list[dict] = []
+    where_to_start: str = ""
+    contribution_workflow: list[str] = []
+    warnings: list[str] = []
+    evidence: list[ClaimEvidence] = []
 
 
 def parse_github_url(value: str) -> tuple[str, str]:
@@ -809,8 +809,8 @@ Return exactly one JSON object, with every field present and no extra fields: pr
         # Only preserve issue recommendations selected deterministically from actual API results.
         clean["recommended_issues"] = deterministic_guide["recommended_issues"]
         clean["first_contribution"] = deterministic_guide["first_contribution"]
-        if "project_summary" not in clean:
-            raise APIError(502, "LLM_INVALID_RESPONSE", "The language model returned an incomplete analysis response.", retryable=True)
+        if "project_summary" not in clean or not clean["project_summary"]:
+            clean["project_summary"] = deterministic_guide.get("project_summary") or "Repository analysis based on inspected files."
         return clean
     except APIError:
         raise

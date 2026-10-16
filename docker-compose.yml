@@ -38,6 +38,13 @@ services:
   ollama:
     image: ollama/ollama:latest
     volumes: ["ollama_data:/root/.ollama"]
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
     # Pull the configured model once after startup: docker compose exec ollama ollama pull qwen3:4b
     restart: unless-stopped
   postgres:
