@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+from starlette.requests import Request
 
 from app import routes
 from app.errors import APIError
@@ -8,6 +9,25 @@ from app.service import GitHubRateLimitError
 
 
 client = TestClient(app, raise_server_exceptions=False)
+
+
+def test_rate_limit_uses_reverse_proxy_client_ip():
+    request = Request({
+        "type": "http", "method": "POST", "path": "/api/analyze",
+        "headers": [(b"x-real-ip", b"203.0.113.42")],
+        "client": ("172.19.0.5", 12345), "server": ("backend", 8000),
+        "scheme": "http", "query_string": b"",
+    })
+    assert routes._request_ip(request) == "203.0.113.42"
+
+
+def test_rate_limit_falls_back_to_direct_client_ip():
+    request = Request({
+        "type": "http", "method": "POST", "path": "/api/analyze",
+        "headers": [], "client": ("127.0.0.1", 12345),
+        "server": ("backend", 8000), "scheme": "http", "query_string": b"",
+    })
+    assert routes._request_ip(request) == "127.0.0.1"
 
 
 def test_invalid_repository_url_returns_consistent_json():
@@ -25,7 +45,7 @@ def test_unknown_api_route_returns_error_schema():
 
 
 @pytest.mark.parametrize("code", [
-    "REPOSITORY_TOO_LARGE", "GITHUB_UNAVAILABLE", "GITHUB_TIMEOUT", "ANALYSIS_TIMEOUT",
+    "REPOSITORY_TOO_LARGE", "GITHUB_UNAVAILABLE", "GITHUB_AUTH_INVALID", "GITHUB_TIMEOUT", "ANALYSIS_TIMEOUT",
     "LLM_UNAVAILABLE", "LLM_TIMEOUT", "LLM_INVALID_RESPONSE", "INTERNAL_SERVER_ERROR",
 ])
 def test_api_errors_always_have_consistent_json_schema(monkeypatch, code):
@@ -39,7 +59,8 @@ def test_api_errors_always_have_consistent_json_schema(monkeypatch, code):
         return None
 
     async def raise_error(*args):
-        raise APIError(500 if code == "INTERNAL_SERVER_ERROR" else 503, code, "Safe test message", retryable=True)
+        status = 500 if code == "INTERNAL_SERVER_ERROR" else 401 if code == "GITHUB_AUTH_INVALID" else 503
+        raise APIError(status, code, "Safe test message", retryable=code != "GITHUB_AUTH_INVALID")
 
     monkeypatch.setattr(routes, "_fresh_cached_analysis", no_cache)
     monkeypatch.setattr(routes, "_analysis_is_active", inactive)
@@ -50,7 +71,7 @@ def test_api_errors_always_have_consistent_json_schema(monkeypatch, code):
     payload = response.json()["error"]
     assert payload["code"] == code
     assert payload["message"] == "Safe test message"
-    assert payload["retryable"] is True
+    assert payload["retryable"] is (code != "GITHUB_AUTH_INVALID")
     assert payload["request_id"] == response.headers["x-request-id"]
 
 

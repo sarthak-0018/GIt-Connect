@@ -9,19 +9,24 @@ services:
     environment:
       GITHUB_TOKEN: ${GITHUB_TOKEN:-}
       LLM_PROVIDER: ${LLM_PROVIDER:-ollama}
-      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://ollama:11434}
-      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:4b}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen3:latest}
+      OLLAMA_THINKING: ${OLLAMA_THINKING:-false}
+      OLLAMA_NUM_PREDICT: ${OLLAMA_NUM_PREDICT:-128}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.6}
+      LLM_TOP_P: ${LLM_TOP_P:-0.95}
+      LLM_TOP_K: ${LLM_TOP_K:-20}
       VLLM_BASE_URL: ${VLLM_BASE_URL:-http://vllm:8000/v1}
       VLLM_MODEL: ${VLLM_MODEL:-Qwen/Qwen3-4B-Instruct-2507}
       REDIS_URL: redis://redis:6379/0
       DATABASE_URL: postgresql://contribcompass:${POSTGRES_PASSWORD:-change-me}@postgres:5432/contribcompass
       GITHUB_TIMEOUT_SECONDS: ${GITHUB_TIMEOUT_SECONDS:-15}
-      LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-90}
+      LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-20}
       MAX_ISSUES: ${MAX_ISSUES:-30}
       MAX_IMPORTANT_FILES: ${MAX_IMPORTANT_FILES:-24}
       MAX_FILE_SIZE: ${MAX_FILE_SIZE:-200000}
       MAX_README_SIZE: ${MAX_README_SIZE:-100000}
-      MAX_CONTEXT_SIZE: ${MAX_CONTEXT_SIZE:-24000}
+      MAX_CONTEXT_SIZE: ${MAX_CONTEXT_SIZE:-8000}
       MAX_TREE_ENTRIES: ${MAX_TREE_ENTRIES:-50000}
       MAX_GITHUB_REQUESTS_PER_ANALYSIS: ${MAX_GITHUB_REQUESTS_PER_ANALYSIS:-32}
       MAX_ANALYSIS_TIME: ${MAX_ANALYSIS_TIME:-120}
@@ -31,14 +36,14 @@ services:
       ANALYSIS_CACHE_FRESH_SECONDS: ${ANALYSIS_CACHE_FRESH_SECONDS:-60}
       ANALYSIS_CACHE_TTL_SECONDS: ${ANALYSIS_CACHE_TTL_SECONDS:-600}
     depends_on:
-      ollama: {condition: service_started}
       redis: {condition: service_healthy}
       postgres: {condition: service_healthy}
     restart: unless-stopped
   ollama:
+    profiles: ["local-inference"]
     image: ollama/ollama:latest
     volumes: ["ollama_data:/root/.ollama"]
-    # Pull the configured model once after startup: docker compose exec ollama ollama pull qwen3:4b
+    # Optional containerized alternative; pull a model once with `docker compose --profile local-inference exec ollama ollama pull qwen3:latest`.
     restart: unless-stopped
   postgres:
     image: postgres:17-alpine

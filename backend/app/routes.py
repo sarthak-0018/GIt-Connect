@@ -13,8 +13,18 @@ router = APIRouter()
 _local_limits: dict[str, list[int]] = {}
 
 
+def _request_ip(request: Request) -> str:
+    # The backend is private to the Compose network. Nginx overwrites X-Real-IP
+    # with the connecting client address, so use it instead of grouping all UI
+    # clients under the single Docker bridge address.
+    forwarded_ip = request.headers.get("x-real-ip", "").strip()
+    if forwarded_ip and len(forwarded_ip) <= 64 and all(char.isalnum() or char in ".:%" for char in forwarded_ip):
+        return forwarded_ip
+    return request.client.host if request.client else "unknown"
+
+
 async def _check_rate_limit(request: Request) -> int | None:
-    ip = request.client.host if request.client else "unknown"
+    ip = _request_ip(request)
     now = int(time.time())
     window = max(settings.analyze_rate_limit_window, 1)
     key = f"contribcompass:ip-limit:{ip}:{now // window}"

@@ -1,0 +1,122 @@
+[
+  {
+    "repository": "BurntSushi/ripgrep",
+    "commit_sha": "3fce3b5bb0236da2df6d99672afb8a719642eca7",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "clap-rs/clap",
+    "commit_sha": "ccc89b83875474399e9d9d70841163f6319d1a41",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "encode/httpx",
+    "commit_sha": "b5addb64f0161ff6bfe94c124ef76f6a1fba5254",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "facebook/react",
+    "commit_sha": "098d2e87a1f7142947418d15f63f975b58c4685b",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "gin-gonic/gin",
+    "commit_sha": "0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "golang/go",
+    "commit_sha": "1eb2e040ee361fc9a59e88be13866df89a3b14b9",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "microsoft/TypeScript",
+    "commit_sha": "abcbb2e69d2a86d9ffee66582a0dd0339b674733",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "microsoft/vscode",
+    "commit_sha": "166933c00b4956b058a06ea4f8d01c42de35c3c1",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "nodejs/node",
+    "commit_sha": "bc5af1c67cd8e029f86ec992688dde9307f4d61a",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "octocat/Hello-World",
+    "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "pallets/flask",
+    "commit_sha": "d086db856be187255b8ec61ef409357393020f32",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "pnpm/pnpm",
+    "commit_sha": "27004ec0d24602d7c165fe8308865b309583a1fd",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "psf/requests",
+    "commit_sha": "611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "pydantic/pydantic",
+    "commit_sha": "5adfeaaaea947f81f0f01868604f219084ec151a",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "spf13/cobra",
+    "commit_sha": "adbc8813901bba65827259daa8e22ff94ec1f30e",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "spring-projects/spring-petclinic",
+    "commit_sha": "500158f732419217507c7656904b8e6aa1bcc0d6",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "tiangolo/fastapi",
+    "commit_sha": "0b919816378eaa773df7ce4204414c712c9fdbea",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "tokio-rs/axum",
+    "commit_sha": "fc78d5bcdb276bd6fb53cf2db55e91757eabb469",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "vercel/next.js",
+    "commit_sha": "a6d4c15991fd2f69c14eea4e8b655b596bc162bf",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  },
+  {
+    "repository": "vitejs/vite",
+    "commit_sha": "74ae7099f9fd1d5cd1adcd32bcbb2c92d8937007",
+    "relevant_issue_numbers": [],
+    "annotation_status": "pending_human_annotation"
+  }
+]

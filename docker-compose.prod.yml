@@ -11,6 +11,9 @@ services:
       LLM_PROVIDER: vllm
       VLLM_BASE_URL: http://vllm:8000/v1
       VLLM_MODEL: ${VLLM_MODEL:-Qwen/Qwen3-4B-Instruct-2507}
+      LLM_TEMPERATURE: ${LLM_TEMPERATURE:-0.6}
+      LLM_TOP_P: ${LLM_TOP_P:-0.95}
+      LLM_TOP_K: ${LLM_TOP_K:-20}
       REDIS_URL: redis://redis:6379/0
       DATABASE_URL: postgresql://contribcompass:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@postgres:5432/contribcompass
       LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-180}

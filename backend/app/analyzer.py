@@ -10,11 +10,11 @@ from pathlib import PurePosixPath
 MANIFESTS = {
     "package.json", "pyproject.toml", "requirements.txt", "requirements-dev.txt", "pipfile",
     "cargo.toml", "go.mod", "pom.xml", "build.gradle", "build.gradle.kts", "gemfile",
-    "composer.json", "mix.exs", "pubspec.yaml",
+    "composer.json", "mix.exs", "pubspec.yaml", "setup.py", "setup.cfg",
 }
-LOCKS = {"pnpm-lock.yaml", "yarn.lock", "package-lock.json", "npm-shrinkwrap.json", "poetry.lock", "pipfile.lock", "cargo.lock", "gemfile.lock", "composer.lock", "go.sum"}
-CANONICAL = {"readme", "readme.md", "readme.rst", "readme.txt", "contributing", "contributing.md", "contributing.rst", "package.json", *MANIFESTS, *LOCKS, "dockerfile", "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml", "makefile", ".env.example"}
-CONFIG_NAMES = {"tsconfig.json", "vite.config.ts", "vite.config.js", "next.config.js", "next.config.ts", "webpack.config.js", "pytest.ini", "tox.ini", "setup.cfg", "ruff.toml", ".ruff.toml", "jest.config.js", "vitest.config.ts", "playwright.config.ts", "cargo.toml", "go.work", "justfile", "meson.build"}
+LOCKS = {"pnpm-lock.yaml", "yarn.lock", "package-lock.json", "npm-shrinkwrap.json", "poetry.lock", "uv.lock", "pipfile.lock", "cargo.lock", "gemfile.lock", "composer.lock", "go.sum"}
+CANONICAL = {"readme", "readme.md", "readme.markdown", "readme.rst", "readme.txt", "contributing", "contributing.md", "contributing.markdown", "contributing.rst", "development.md", "install.md", "package.json", *MANIFESTS, *LOCKS, "dockerfile", "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml", "makefile", ".env.example"}
+CONFIG_NAMES = {"tsconfig.json", "vite.config.ts", "vite.config.js", "next.config.js", "next.config.ts", "webpack.config.js", "pytest.ini", "tox.ini", "setup.cfg", "ruff.toml", ".ruff.toml", ".prettierrc", ".prettierrc.json", ".eslintrc", ".eslintrc.json", "eslint.config.js", "jest.config.js", "vitest.config.ts", "playwright.config.ts", "cargo.toml", "go.work", "justfile", "meson.build"}
 SKIP_DIRS = {"node_modules", "vendor", "dist", "build", "coverage", ".next", "target", "__pycache__", ".venv", "venv", "site-packages", "generated"}
 IMPORTANT_DIRS = {"src", "app", "lib", "packages", "components", "services", "api", "backend", "frontend", "tests", "test", "__tests__", "docs", "documentation", "examples", "scripts", "config", "cmd", "internal", "crates"}
 FRAMEWORKS = {
@@ -51,10 +51,16 @@ def file_priority(path: str) -> int:
         return 1180 if "/" not in normalized else 1070
     if name in MANIFESTS:
         return 1000
+    if name.startswith("requirements") and name.endswith(".txt"):
+        return 1000
+    if re.match(r"^requirements/[^/]+\.txt$", normalized):
+        return 1000
     if name in LOCKS:
         return 900
     if name in {"dockerfile", "docker-compose.yml", "docker-compose.yaml", "compose.yml", "compose.yaml", "makefile", ".env.example", "justfile"}:
         return 850
+    if name in {"development.md", "development.rst", "install.md", "installation.md", "development.txt"}:
+        return 830 if "/" not in normalized else 740
     if normalized.startswith(".github/workflows/"):
         return 820
     if name in CONFIG_NAMES:
@@ -72,7 +78,15 @@ def file_priority(path: str) -> int:
 
 def select_important_paths(paths: list[str], limit: int = 24) -> list[str]:
     eligible = [p for p in paths if file_priority(p) > 0 and not any(part.lower() in SKIP_DIRS for part in PurePosixPath(p).parts)]
-    return sorted(set(eligible), key=lambda p: (-file_priority(p), p.lower()))[:limit]
+    ranked = sorted(set(eligible), key=lambda p: (-file_priority(p), p.lower()))
+    # Canonical docs and manifests are never dropped just because a repository has
+    # many generated or nested config files.
+    forced = [p for p in ranked if "/" not in p and PurePosixPath(p).name.lower() in CANONICAL]
+    forced.extend(p for p in ranked if re.match(r"^requirements/[^/]+\.txt$", p, re.I))
+    forced.extend([p for p in ranked if p.lower().startswith(".github/workflows/") and p not in forced][:4])
+    forced = forced[:max(limit, 1)]
+    forced_set = set(forced)
+    return forced + [p for p in ranked if p not in forced_set][:max(limit - len(forced), 0)]
 
 
 def _parse_json(value: str) -> dict:
@@ -122,7 +136,18 @@ def analyze_readme(path: str | None, content: str) -> dict:
     for heading, body in sections:
         if any(x in heading.lower() for x in ("feature", "what it does", "capabilities")):
             features.extend(re.findall(r"^\s*[-*+]\s+(.+)$", "\n".join(body), re.M)[:12])
-    purpose = next((line.strip(" #>*") for line in content.splitlines() if line.strip() and not line.startswith(("#", "![", "[!", "<!--"))), None)
+    paragraphs = re.split(r"\n\s*\n", content)
+    purpose = None
+    for paragraph in paragraphs:
+        cleaned = " ".join(line.strip() for line in paragraph.splitlines() if not re.match(r"^\s*#{1,6}\s+", line) and not re.match(r"^\s*(?:[-*_]\s*){3,}$", line)).strip(" #>*")
+        if not cleaned or cleaned.startswith(("![", "[!", "<!--", "<img", "[!") ) or cleaned.count("https://") > 1:
+            continue
+        if re.fullmatch(r"(?:\[[^\]]+\]\([^)]*\)\s*)+", cleaned):
+            continue
+        cleaned = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", cleaned)
+        if len(cleaned) >= 18:
+            purpose = cleaned
+            break
     links = list(dict.fromkeys(re.findall(r"\[[^\]]+\]\((https?://[^)]+|[^)#]+\.md(?:#[^)]*)?)\)", content)))[:20]
     return {
         "status": "found", "path": path, "length": len(content), "purpose": purpose[:700] if purpose else None,
@@ -161,11 +186,15 @@ def analyze_contributing(path: str | None, content: str) -> dict:
 
 def analyze_profile(repository: dict, paths: list[str], files: dict[str, str], languages: dict, commit_sha: str | None) -> dict:
     basename = {PurePosixPath(p).name.lower(): p for p in files}
-    readme_path = next((p for p in files if PurePosixPath(p).name.lower() in {"readme.md", "readme", "readme.rst", "readme.txt"}), None)
-    contributing_path = next((p for p in files if PurePosixPath(p).name.lower() in {"contributing.md", "contributing", "contributing.rst"}), None)
+    readme_names = {"readme.md", "readme", "readme.markdown", "readme.rst", "readme.txt"}
+    contributing_names = {"contributing.md", "contributing", "contributing.markdown", "contributing.rst", "contributing.txt"}
+    readme_path = next((p for p in files if "/" not in p and PurePosixPath(p).name.lower() in readme_names), None) or next((p for p in files if PurePosixPath(p).name.lower() in readme_names), None)
+    contributing_path = next((p for p in files if "/" not in p and PurePosixPath(p).name.lower() in contributing_names), None) or next((p for p in files if PurePosixPath(p).name.lower() in contributing_names), None)
     readme = analyze_readme(readme_path, files.get(readme_path, "") if readme_path else "")
     contributing = analyze_contributing(contributing_path, files.get(contributing_path, "") if contributing_path else "")
-    manifests = {p: files[p] for p in files if PurePosixPath(p).name.lower() in MANIFESTS}
+    supplemental_docs = {p: analyze_readme(p, raw) for p, raw in files.items()
+                         if PurePosixPath(p).name.lower() in {"development.md", "development.rst", "development.txt", "install.md", "installation.md"}}
+    manifests = {p: files[p] for p in files if PurePosixPath(p).name.lower() in MANIFESTS or (PurePosixPath(p).name.lower().startswith("requirements") or re.match(r"^requirements/[^/]+\.txt$", p, re.I)) and PurePosixPath(p).suffix.lower() == ".txt"}
     deps: dict[str, list[str]] = {}
     scripts: dict[str, str] = {}
     runtime: list[str] = []
@@ -208,7 +237,13 @@ def analyze_profile(repository: dict, paths: list[str], files: dict[str, str], l
             if "poetry" in files:
                 package_manager = package_manager or "poetry"
             install_commands.append("poetry install" if package_manager == "poetry" else "python -m pip install -e .")
-        elif name.startswith("requirements") or name == "pipfile":
+        elif name in {"setup.py", "setup.cfg"}:
+            runtime.append("Python (setup metadata; version not specified)")
+            package_manager = package_manager or "pip"
+            deps[path] = re.findall(r"(?m)^\s*([A-Za-z0-9_.-]+)(?:\s*[<>=!~].*)?$", raw)[:120] if name == "setup.cfg" else []
+            packages.update(x.lower().replace("_", "-") for x in deps[path])
+            install_commands.append("python -m pip install -e .")
+        elif name.startswith("requirements") or re.match(r"^requirements/[^/]+\.txt$", path, re.I) or name == "pipfile":
             raw_deps = re.findall(r"^\s*([A-Za-z0-9_.-]+)", raw, re.M)
             deps[path] = raw_deps[:120]
             packages.update(x.lower().replace("_", "-") for x in raw_deps)
@@ -221,7 +256,7 @@ def analyze_profile(repository: dict, paths: list[str], files: dict[str, str], l
                 install_commands.append("uv pip install -r requirements.txt")
             else:
                 package_manager = package_manager or "pip"
-                install_commands.append("python -m pip install -r " + PurePosixPath(path).name)
+                install_commands.append("python -m pip install -r " + path)
         elif name == "cargo.toml":
             data = _parse_toml(raw)
             cargo = data.get("package", {})
@@ -260,6 +295,10 @@ def analyze_profile(repository: dict, paths: list[str], files: dict[str, str], l
             break
     if "package.json" in basename:
         install_commands = [f"{package_manager or 'npm'} install (from package.json)"]
+    if "pyproject.toml" in basename and package_manager == "uv":
+        install_commands = ["uv sync"]
+    elif "pyproject.toml" in basename and package_manager == "poetry":
+        install_commands = ["poetry install"]
     if "test" in scripts:
         test_commands.append("npm run test")
     if "build" in scripts:
@@ -338,11 +377,24 @@ def analyze_profile(repository: dict, paths: list[str], files: dict[str, str], l
         "detected_languages": detected_languages, "frameworks": sorted(frameworks), "runtime": list(dict.fromkeys(x for x in runtime if x)), "package_manager": package_manager,
         "dependency_manifests": manifests_found, "dependencies": deps, "scripts": scripts, "install_commands": list(dict.fromkeys(x for x in install_commands if x)), "build_commands": list(dict.fromkeys(build_commands)), "test_commands": list(dict.fromkeys(test_commands)), "lint_format_commands": list(dict.fromkeys(lint_commands)),
         "important_files": important_files, "important_directories": key_dirs, "entry_points": entry_points[:20], "environment_variables": {"source": env_path, "names": sorted(set(env_vars))},
-        "docker_configuration": docker_files, "ci_configuration": ci_files, "test_structure": tests[:60], "documentation_structure": doc_paths[:60], "readme_analysis": readme, "contributing_analysis": contributing,
+        "docker_configuration": docker_files, "ci_configuration": ci_files, "test_structure": tests[:60], "documentation_structure": doc_paths[:60], "supplemental_documentation": supplemental_docs, "readme_analysis": readme, "contributing_analysis": contributing,
     }
 
 
 def repository_fingerprint(profile: dict, issue_count: int) -> dict:
     repo = profile["repository"]
-    fingerprint = {"repository": repo.get("full_name"), "commit_sha": repo.get("commit_sha"), "language": repo.get("primary_language"), "frameworks": profile["frameworks"], "package_manager": profile["package_manager"], "has_readme": profile["readme_analysis"]["status"] == "found", "has_contributing": profile["contributing_analysis"]["status"] == "found", "has_tests": bool(profile["test_structure"] or profile["test_commands"]), "has_docker": bool(profile["docker_configuration"]), "important_files": profile["important_files"], "issue_count": issue_count}
+    fingerprint = {
+        "repository": repo.get("full_name"), "commit_sha": repo.get("commit_sha"),
+        "default_branch": repo.get("default_branch"), "primary_language": repo.get("primary_language"),
+        "languages": profile.get("detected_languages", []), "frameworks": profile["frameworks"],
+        "package_managers": [profile["package_manager"]] if profile.get("package_manager") else [],
+        "runtime_versions": profile.get("runtime", []), "entrypoints": profile.get("entry_points", []),
+        "important_files": profile["important_files"],
+        "important_directories": [x["path"] for x in profile.get("important_directories", [])],
+        "has_readme": profile["readme_analysis"]["status"] == "found",
+        "has_contributing": profile["contributing_analysis"]["status"] == "found",
+        "has_tests": bool(profile["test_structure"] or profile["test_commands"]),
+        "has_docker": bool(profile["docker_configuration"]), "has_ci": bool(profile.get("ci_configuration")),
+        "issue_count": issue_count,
+    }
     return fingerprint

@@ -19,12 +19,18 @@ declare module 'lucide-react' {
   export const Compass: Icon
   export const ExternalLink: Icon
   export const FileCode2: Icon
+  export const Folder: Icon
   export const Github: Icon
+  export const GitFork: Icon
   export const GitPullRequest: Icon
   export const LoaderCircle: Icon
+  export const Package: Icon
+  export const Play: Icon
   export const Search: Icon
   export const ShieldCheck: Icon
   export const Sparkles: Icon
   export const Star: Icon
   export const Terminal: Icon
+  export const Wrench: Icon
+  export const Zap: Icon
 }

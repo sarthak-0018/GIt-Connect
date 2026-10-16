@@ -80,3 +80,31 @@ def test_readme_parser_extracts_features_commands_and_links():
     assert len(readme["features"]) == 2
     assert readme["command_blocks"]
     assert readme["documentation_links"]
+
+
+def test_canonical_docs_and_workflows_are_selected_even_for_large_trees():
+    paths = [f".github/workflows/job-{i}.yml" for i in range(30)] + ["README.md", "CONTRIBUTING.md", "pyproject.toml", "requirements/base.txt", "INSTALL.md", "app/main.py"]
+    selected = select_important_paths(paths, 8)
+    assert "README.md" in selected
+    assert "CONTRIBUTING.md" in selected
+    assert "pyproject.toml" in selected
+    assert "requirements/base.txt" in selected
+    assert "INSTALL.md" in selected
+    assert len([p for p in selected if p.startswith(".github/workflows/")]) <= 4
+
+
+def test_root_readme_wins_over_nested_readme_and_supplemental_docs_are_parsed():
+    profile = analyze_profile(repository("Python"), ["docs/README.md", "README.md", "DEVELOPMENT.md", "requirements/dev.txt", "tests/test_app.py", ".github/workflows/ci.yml"], {
+        "README.md": "# Sample\n\nSample uses FastAPI to expose a metrics endpoint.\n\n## Quick Start\nRun `pytest`.\n",
+        "docs/README.md": "# Nested\n\nThis is only nested documentation.\n",
+        "DEVELOPMENT.md": "# Development\n\n## Tests\nUse `pytest tests`.\n",
+        "requirements/dev.txt": "pytest\nfastapi>=0.1\n",
+        ".github/workflows/ci.yml": "name: tests\n",
+    }, {}, "pin")
+    assert profile["readme_analysis"]["path"] == "README.md"
+    assert "FastAPI" in profile["readme_analysis"]["purpose"]
+    assert "DEVELOPMENT.md" in profile["supplemental_documentation"]
+    assert "requirements/dev.txt" in profile["dependencies"]
+    fingerprint = repository_fingerprint(profile, 0)
+    assert fingerprint["default_branch"] == "main"
+    assert fingerprint["has_ci"] is True

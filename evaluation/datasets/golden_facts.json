@@ -1,0 +1,478 @@
+[
+  {
+    "repository": "BurntSushi/ripgrep",
+    "commit_sha": "3fce3b5bb0236da2df6d99672afb8a719642eca7",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "Cargo.toml"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Rust"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "Cargo.toml"
+    ]
+  },
+  {
+    "repository": "clap-rs/clap",
+    "commit_sha": "ccc89b83875474399e9d9d70841163f6319d1a41",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "Cargo.toml"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Rust"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "Cargo.toml"
+    ]
+  },
+  {
+    "repository": "encode/httpx",
+    "commit_sha": "b5addb64f0161ff6bfe94c124ef76f6a1fba5254",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "pyproject.toml",
+        "requirements.txt"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Python"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "pyproject.toml",
+      "requirements.txt"
+    ]
+  },
+  {
+    "repository": "facebook/react",
+    "commit_sha": "098d2e87a1f7142947418d15f63f975b58c4685b",
+    "facts": {
+      "primary_language": "JavaScript",
+      "has_readme": true,
+      "has_ci": true,
+      "has_tests": true,
+      "has_docker": false,
+      "has_contributing": true,
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "package.json",
+        "yarn.lock"
+      ]
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "package.json",
+      "yarn.lock"
+    ]
+  },
+  {
+    "repository": "gin-gonic/gin",
+    "commit_sha": "0f09c3a9b4626d9fe9979cf4d0521d6ae32ab646",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "go.mod"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Go"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "go.mod"
+    ]
+  },
+  {
+    "repository": "golang/go",
+    "commit_sha": "1eb2e040ee361fc9a59e88be13866df89a3b14b9",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": false,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Go"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md"
+    ]
+  },
+  {
+    "repository": "microsoft/TypeScript",
+    "commit_sha": "abcbb2e69d2a86d9ffee66582a0dd0339b674733",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "package.json"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": null,
+      "has_tests": true,
+      "primary_language": "Go"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "package.json"
+    ]
+  },
+  {
+    "repository": "microsoft/vscode",
+    "commit_sha": "166933c00b4956b058a06ea4f8d01c42de35c3c1",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "package.json"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "TypeScript"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "package.json"
+    ]
+  },
+  {
+    "repository": "nodejs/node",
+    "commit_sha": "bc5af1c67cd8e029f86ec992688dde9307f4d61a",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "pyproject.toml"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "JavaScript"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "pyproject.toml"
+    ]
+  },
+  {
+    "repository": "octocat/Hello-World",
+    "commit_sha": "7fd1a60b01f91b314f59955a4e4d4e80d8edf11d",
+    "facts": {
+      "important_files": [
+        "README"
+      ],
+      "has_contributing": false,
+      "has_readme": true,
+      "has_ci": false,
+      "has_docker": false,
+      "has_tests": false,
+      "primary_language": null
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README"
+    ]
+  },
+  {
+    "repository": "pallets/flask",
+    "commit_sha": "d086db856be187255b8ec61ef409357393020f32",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "pyproject.toml"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Python"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "pyproject.toml"
+    ]
+  },
+  {
+    "repository": "pnpm/pnpm",
+    "commit_sha": "27004ec0d24602d7c165fe8308865b309583a1fd",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "Cargo.toml",
+        "package.json"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Rust"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "Cargo.toml",
+      "package.json"
+    ]
+  },
+  {
+    "repository": "psf/requests",
+    "commit_sha": "611c6162cbc4ac2020a2f91c7cfa4f3abf9bbb60",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "pyproject.toml"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Python"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "pyproject.toml"
+    ]
+  },
+  {
+    "repository": "pydantic/pydantic",
+    "commit_sha": "5adfeaaaea947f81f0f01868604f219084ec151a",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "pyproject.toml"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Python"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "pyproject.toml"
+    ]
+  },
+  {
+    "repository": "spf13/cobra",
+    "commit_sha": "adbc8813901bba65827259daa8e22ff94ec1f30e",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "go.mod"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Go"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "go.mod"
+    ]
+  },
+  {
+    "repository": "spring-projects/spring-petclinic",
+    "commit_sha": "500158f732419217507c7656904b8e6aa1bcc0d6",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "build.gradle",
+        "pom.xml"
+      ],
+      "has_contributing": false,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": true,
+      "has_tests": true,
+      "primary_language": "CSS"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "build.gradle",
+      "pom.xml"
+    ]
+  },
+  {
+    "repository": "tiangolo/fastapi",
+    "commit_sha": "0b919816378eaa773df7ce4204414c712c9fdbea",
+    "facts": {
+      "primary_language": "Python",
+      "has_readme": true,
+      "has_ci": true,
+      "has_tests": true,
+      "has_docker": false,
+      "has_contributing": false,
+      "important_files": [
+        "README.md",
+        "pyproject.toml",
+        "uv.lock"
+      ]
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "pyproject.toml",
+      "uv.lock"
+    ]
+  },
+  {
+    "repository": "tokio-rs/axum",
+    "commit_sha": "fc78d5bcdb276bd6fb53cf2db55e91757eabb469",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "Cargo.toml"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "Rust"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "Cargo.toml"
+    ]
+  },
+  {
+    "repository": "vercel/next.js",
+    "commit_sha": "a6d4c15991fd2f69c14eea4e8b655b596bc162bf",
+    "facts": {
+      "important_files": [
+        "readme.md",
+        "contributing.md",
+        "Cargo.toml",
+        "package.json"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "JavaScript"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "readme.md",
+      "contributing.md",
+      "Cargo.toml",
+      "package.json"
+    ]
+  },
+  {
+    "repository": "vitejs/vite",
+    "commit_sha": "74ae7099f9fd1d5cd1adcd32bcbb2c92d8937007",
+    "facts": {
+      "important_files": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "package.json"
+      ],
+      "has_contributing": true,
+      "has_readme": true,
+      "has_ci": true,
+      "has_docker": false,
+      "has_tests": true,
+      "primary_language": "TypeScript"
+    },
+    "annotation_status": "auto_seeded_needs_review",
+    "source": "GitHub repository metadata and pinned commit tree",
+    "source_paths": [
+      "README.md",
+      "CONTRIBUTING.md",
+      "package.json"
+    ]
+  }
+]
