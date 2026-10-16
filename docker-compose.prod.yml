@@ -1,0 +1,64 @@
+services:
+  frontend:
+    build: ./frontend
+    ports: ["${APP_PORT:-80}:80"]
+    depends_on: [backend]
+    restart: unless-stopped
+  backend:
+    build: ./backend
+    environment:
+      GITHUB_TOKEN: ${GITHUB_TOKEN:-}
+      LLM_PROVIDER: vllm
+      VLLM_BASE_URL: http://vllm:8000/v1
+      VLLM_MODEL: ${VLLM_MODEL:-Qwen/Qwen3-4B-Instruct-2507}
+      REDIS_URL: redis://redis:6379/0
+      DATABASE_URL: postgresql://contribcompass:${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}@postgres:5432/contribcompass
+      LLM_TIMEOUT_SECONDS: ${LLM_TIMEOUT_SECONDS:-180}
+      MAX_ISSUES: ${MAX_ISSUES:-30}
+      MAX_IMPORTANT_FILES: ${MAX_IMPORTANT_FILES:-24}
+      MAX_FILE_SIZE: ${MAX_FILE_SIZE:-200000}
+      MAX_README_SIZE: ${MAX_README_SIZE:-100000}
+      MAX_CONTEXT_SIZE: ${MAX_CONTEXT_SIZE:-24000}
+      MAX_TREE_ENTRIES: ${MAX_TREE_ENTRIES:-50000}
+      MAX_GITHUB_REQUESTS_PER_ANALYSIS: ${MAX_GITHUB_REQUESTS_PER_ANALYSIS:-32}
+      MAX_ANALYSIS_TIME: ${MAX_ANALYSIS_TIME:-180}
+      ANALYZE_RATE_LIMIT_PER_IP: ${ANALYZE_RATE_LIMIT_PER_IP:-10}
+      ANALYZE_RATE_LIMIT_WINDOW: ${ANALYZE_RATE_LIMIT_WINDOW:-3600}
+      MAX_CONCURRENT_ANALYSES: ${MAX_CONCURRENT_ANALYSES:-4}
+      ANALYSIS_CACHE_FRESH_SECONDS: ${ANALYSIS_CACHE_FRESH_SECONDS:-60}
+      ANALYSIS_CACHE_TTL_SECONDS: ${ANALYSIS_CACHE_TTL_SECONDS:-600}
+    depends_on:
+      vllm: {condition: service_started}
+      redis: {condition: service_healthy}
+      postgres: {condition: service_healthy}
+    restart: unless-stopped
+  vllm:
+    image: vllm/vllm-openai:latest
+    command: ["--model", "${VLLM_MODEL:-Qwen/Qwen3-4B-Instruct-2507}", "--host", "0.0.0.0", "--port", "8000"]
+    ipc: host
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    restart: unless-stopped
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: contribcompass
+      POSTGRES_USER: contribcompass
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD}
+    volumes: ["postgres_data:/var/lib/postgresql/data"]
+    healthcheck: {test: ["CMD-SHELL", "pg_isready -U contribcompass -d contribcompass"], interval: 10s, timeout: 5s, retries: 5}
+    restart: unless-stopped
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: ["redis_data:/data"]
+    healthcheck: {test: ["CMD", "redis-cli", "ping"], interval: 10s, timeout: 3s, retries: 5}
+    restart: unless-stopped
+volumes:
+  postgres_data:
+  redis_data:
